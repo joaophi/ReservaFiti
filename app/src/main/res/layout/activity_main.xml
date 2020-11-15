@@ -37,6 +37,48 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbSeg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seg" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbTer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ter" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbQua"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qua" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbQui"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qui" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbSex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sex" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbSab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sab" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAtivar"
         android:layout_width="match_parent"
