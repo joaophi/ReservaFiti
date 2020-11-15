@@ -10,19 +10,13 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import kotlinx.coroutines.runBlocking
-import org.conscrypt.Conscrypt
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import java.security.Security
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AlarmReceiver : BroadcastReceiver() {
-    init {
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
-    }
-
+class ReservaReceiver : BroadcastReceiver() {
     val retrofit = Retrofit.Builder()
         .baseUrl("https://evomobile.azurewebsites.net")
         .addConverterFactory(MoshiConverterFactory.create())
@@ -53,7 +47,8 @@ class AlarmReceiver : BroadcastReceiver() {
             ).unwrap()
 
             val authorization = "Bearer ${obterDadosLogin.token}"
-            val data = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(dia.timeInMillis))
+            val data =
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(dia.timeInMillis))
 
             val obterAgendaDia = fitiApi.obterAgendaDia(authorization, data).unwrap().first()
             fitiApi.participarAtividade(authorization, data, obterAgendaDia.idConfiguracao).unwrap()

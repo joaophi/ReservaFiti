@@ -59,4 +59,17 @@ interface FitiApi {
         @Query("data") data: String,
         @Query("idConfiguracao") idConfiguracao: Int,
     ): Response<Unit>
+
+    @JsonClass(generateAdapter = true)
+    data class AtividadesAcademia(
+        val idAtividade: Int,
+        val nomeAtividade: String
+    ) {
+        override fun toString(): String = "$idAtividade - $nomeAtividade"
+    }
+
+    @GET("/api/v1/agenda/atividades-academia/24")
+    suspend fun atividadesAcademia(
+        @Header("Authorization") authorization: String
+    ): Response<List<AtividadesAcademia>>
 }

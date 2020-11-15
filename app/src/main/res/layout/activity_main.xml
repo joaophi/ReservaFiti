@@ -1,96 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="4dp"
     tools:context=".MainActivity">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="Email">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="Senha"
-        app:endIconMode="password_toggle">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtSenha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="4dp">
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbSeg"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crdUsuario"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seg" />
+            android:layout_margin="4dp"
+            app:cardElevation="4dp">
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbTer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ter" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="4dp">
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbQua"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Qua" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Usuário" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbQui"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Qui" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="4dp"
+                    android:background="@android:color/darker_gray" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbSex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sex" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:hint="Email">
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cbSab"
-            android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:hint="Senha"
+                    app:endIconMode="password_toggle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtSenha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnConectar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Conectar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSalvar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sab" />
+            android:layout_margin="4dp"
+            android:text="Salvar" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAtivar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:text="Ativar" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLogs"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:layout_weight="1" />
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>
