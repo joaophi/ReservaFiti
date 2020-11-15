@@ -7,12 +7,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import androidx.lifecycle.AndroidViewModel
-import org.conscrypt.Conscrypt
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import java.security.Security
 import java.util.*
 
 fun <T : Any?> Response<T>.unwrap(): T = if (isSuccessful)
@@ -23,10 +21,6 @@ else
 val AndroidViewModel.context: Context get() = getApplication()
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    init {
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
-    }
-
     val retrofit = Retrofit.Builder()
         .baseUrl("https://evomobile.azurewebsites.net")
         .addConverterFactory(MoshiConverterFactory.create())
@@ -49,7 +43,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (calendar.before(Calendar.getInstance()))
             calendar.add(Calendar.DAY_OF_MONTH, 1)
 
-        val intent = Intent(context, AlarmReceiver::class.java)
+        val intent = Intent(context, ReservaReceiver::class.java)
         intent.putExtra("email", email)
         intent.putExtra("senha", senha)
         intent.putExtra("dias", dias.toIntArray())
