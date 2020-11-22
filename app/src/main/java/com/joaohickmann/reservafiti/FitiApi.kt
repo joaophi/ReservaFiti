@@ -51,6 +51,7 @@ interface FitiApi {
     data class ObterAgendaDia(
         val idConfiguracao: Int,
         val horaInicio: String,
+        val status: Int,
     )
 
     @GET("/api/v1/agenda/obter-agenda-dia?apenasDisponiveis=false&mobile=true&wod=true&manha=true&tarde=true&noite=true&flAgendadas=false")

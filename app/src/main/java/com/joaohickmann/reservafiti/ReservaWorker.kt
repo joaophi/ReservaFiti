@@ -95,7 +95,8 @@ class ReservaWorker(
                     filtroFim = null,
                     idsAtividades,
                 ).unwrap().first { LocalTime.parse(it.horaInicio) == hora }
-                try {
+
+                if (obterAgendaDia.status != 5) { // JÁ RESERVADO
                     fitiApi.participarAtividade(
                         authorization,
                         obterDadosLogin.idFilial,
@@ -104,9 +105,6 @@ class ReservaWorker(
                     ).unwrap()
 
                     showNotification("Reservado", "Para: $horario")
-                } catch (ex: Exception) {
-                    if ("Esse participante já está inscrito na atividade" !in ex.message.orEmpty())
-                        throw ex
                 }
             }
 
