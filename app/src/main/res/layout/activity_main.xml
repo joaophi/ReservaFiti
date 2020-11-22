@@ -42,6 +42,12 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbDom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dom" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cbSeg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,10 +93,10 @@
         android:text="Ativar" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCancelar"
+        android:id="@+id/btnDesativar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        android:text="Cancelar" />
+        android:text="Desativar" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

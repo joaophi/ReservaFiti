@@ -11,9 +11,7 @@ import androidx.work.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 class ReservaWorker(
@@ -45,7 +43,8 @@ class ReservaWorker(
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-        NotificationManagerCompat.from(applicationContext).notify(0, builder)
+        val id = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
+        NotificationManagerCompat.from(applicationContext).notify(id, builder)
     }
 
     override suspend fun doWork(): Result {
@@ -56,43 +55,62 @@ class ReservaWorker(
             val senha = inputData.getString("senha")
                 ?: return Result.failure()
 
-            val dia = inputData.getInt("dia", 0)
-            if (dia == 0) return Result.failure()
+            val diaInt = inputData.getInt("dia", -1)
+            if (diaInt == -1) return Result.failure()
+            val dia = DayOfWeek.of(diaInt)
+
+            val horaInt = inputData.getInt("hora", -1)
+            if (horaInt == -1) return Result.failure()
+            val hora = LocalTime.ofSecondOfDay(horaInt.toLong())
 
             val agora = LocalDateTime.now()
-            val dateTime = generateSequence(LocalDate.now().atTime(18, 0)) { it.plusDays(1) }
+            val horario = generateSequence(LocalDate.now().atTime(hora)) { it.plusDays(1) }
                 .filter { it.isAfter(agora) }
-                .filter { it.dayOfWeek.value == dia }
+                .filter { it.dayOfWeek == dia }
                 .first()
 
-            val proxima =
-                if (agora.isAfter(dateTime.minusDays(2))) {
-                    val buscarUsuario = fitiApi.buscarUsuario(email).unwrap()
-                    val autenticarUsuario = fitiApi
-                        .autenticarUsuario(buscarUsuario.idAspeNetUser, senha)
-                        .unwrap()
-                        .first()
-                    val obterDadosLogin = fitiApi.obterDadosLogin(
-                        buscarUsuario.idUsuarioToken,
-                        autenticarUsuario.idClienteW12Token,
-                        buscarUsuario.idAspeNetUser
+            val podeReserver = agora.isAfter(horario.minusDays(2))
+            if (podeReserver) {
+                val buscarUsuario = fitiApi.buscarUsuario(email).unwrap()
+                val autenticarUsuario = fitiApi
+                    .autenticarUsuario(buscarUsuario.idAspeNetUser, senha)
+                    .unwrap()
+                    .first()
+                val obterDadosLogin = fitiApi.obterDadosLogin(
+                    buscarUsuario.idUsuarioToken,
+                    autenticarUsuario.idClienteW12Token,
+                    buscarUsuario.idAspeNetUser,
+                ).unwrap()
+
+                val authorization = "Bearer ${obterDadosLogin.token}"
+                val data = horario.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                val filtroInicio = hora.format(DateTimeFormatter.ofPattern("0.HH:mm"))
+                val idsAtividades = 916
+
+                val obterAgendaDia = fitiApi.obterAgendaDia(
+                    authorization,
+                    obterDadosLogin.idFilial,
+                    data,
+                    filtroInicio,
+                    filtroFim = null,
+                    idsAtividades,
+                ).unwrap().first { LocalTime.parse(it.horaInicio) == hora }
+                try {
+                    fitiApi.participarAtividade(
+                        authorization,
+                        obterDadosLogin.idFilial,
+                        data,
+                        obterAgendaDia.idConfiguracao,
                     ).unwrap()
 
-                    val authorization = "Bearer ${obterDadosLogin.token}"
-                    val data = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    showNotification("Reservado", "Para: $horario")
+                } catch (ex: Exception) {
+                    if ("Esse participante já está inscrito na atividade" !in ex.message.orEmpty())
+                        throw ex
+                }
+            }
 
-                    val obterAgendaDia =
-                        fitiApi.obterAgendaDia(authorization, data).unwrap().first()
-                    fitiApi.participarAtividade(authorization, data, obterAgendaDia.idConfiguracao)
-                        .unwrap()
-
-                    showNotification("Reservado", "Para o dia: $data")
-
-                    dateTime.plusWeeks(1)
-                } else {
-                    dateTime
-                }.minusDays(2)
-
+            val prox = if (podeReserver) horario.plusWeeks(1) else horario
 
             WorkManager.getInstance(applicationContext)
                 .enqueue(
@@ -102,7 +120,7 @@ class ReservaWorker(
                                 .setRequiredNetworkType(NetworkType.CONNECTED)
                                 .build()
                         )
-                        .setInitialDelay(Duration.between(LocalDateTime.now(), proxima))
+                        .setInitialDelay(Duration.between(LocalDateTime.now(), prox.minusDays(2)))
                         .setInputData(inputData)
                         .build()
                 )

@@ -1,21 +1,13 @@
 package com.joaohickmann.reservafiti
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.work.*
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import java.time.DayOfWeek
-
-fun <T : Any?> Response<T>.unwrap(): T = if (isSuccessful)
-    body() ?: throw Exception("Error: null body")
-else
-    throw Exception(errorBody()?.string() ?: "Error: null errorBody")
-
-val AndroidViewModel.context: Context get() = getApplication()
+import java.time.LocalTime
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val workManager = WorkManager.getInstance(application)
@@ -34,8 +26,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             .unwrap()
             .first()
 
-        cancelar()
-        for (dia in dias) {
+        desativar()
+        for (dia in dias)
             workManager.enqueue(
                 OneTimeWorkRequestBuilder<ReservaWorker>()
                     .setConstraints(
@@ -48,14 +40,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                             .putString("email", email)
                             .putString("senha", senha)
                             .putInt("dia", dia.value)
+                            .putInt("hora", LocalTime.of(18, 0).toSecondOfDay())
                             .build()
                     )
                     .build()
             )
-        }
     }
 
-    fun cancelar() {
+    fun desativar() {
         workManager.cancelAllWork()
     }
 }

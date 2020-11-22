@@ -17,27 +17,25 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val dias = sequenceOf(
+            binding.cbSeg,
+            binding.cbTer,
+            binding.cbQua,
+            binding.cbQui,
+            binding.cbSex,
+            binding.cbSab,
+            binding.cbDom,
+        )
+
         binding.btnAtivar.setOnClickListener {
             lifecycleScope.launch {
                 try {
-                    val dias = mutableSetOf<DayOfWeek>()
-                    if (binding.cbSeg.isChecked)
-                        dias += DayOfWeek.MONDAY
-                    if (binding.cbTer.isChecked)
-                        dias += DayOfWeek.TUESDAY
-                    if (binding.cbQua.isChecked)
-                        dias += DayOfWeek.WEDNESDAY
-                    if (binding.cbQui.isChecked)
-                        dias += DayOfWeek.THURSDAY
-                    if (binding.cbSex.isChecked)
-                        dias += DayOfWeek.FRIDAY
-                    if (binding.cbSab.isChecked)
-                        dias += DayOfWeek.SATURDAY
-
                     viewModel.ativar(
                         email = binding.edtEmail.text.toString(),
                         senha = binding.edtSenha.text.toString(),
-                        dias
+                        dias.filter { it.isChecked }
+                            .mapIndexed { i, _ -> DayOfWeek.of(i + 1) }
+                            .toSet()
                     )
                     Toast.makeText(applicationContext, "Ativado", Toast.LENGTH_LONG).show()
                 } catch (ex: Exception) {
@@ -46,6 +44,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnCancelar.setOnClickListener { viewModel.cancelar() }
+        binding.btnDesativar.setOnClickListener {
+            viewModel.desativar()
+            Toast.makeText(applicationContext, "Desativado", Toast.LENGTH_LONG).show()
+        }
     }
 }
