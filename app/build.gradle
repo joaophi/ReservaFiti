@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.joaohickmann.reservafiti"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -18,7 +18,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
@@ -53,4 +54,6 @@ dependencies {
 
     implementation "com.squareup.moshi:moshi:1.11.0"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
+
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
 }

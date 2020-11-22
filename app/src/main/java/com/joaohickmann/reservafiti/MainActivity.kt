@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.joaohickmann.reservafiti.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import java.util.*
+import java.time.DayOfWeek
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -20,19 +20,19 @@ class MainActivity : AppCompatActivity() {
         binding.btnAtivar.setOnClickListener {
             lifecycleScope.launch {
                 try {
-                    val dias = mutableSetOf<Int>()
+                    val dias = mutableSetOf<DayOfWeek>()
                     if (binding.cbSeg.isChecked)
-                        dias += Calendar.MONDAY
+                        dias += DayOfWeek.MONDAY
                     if (binding.cbTer.isChecked)
-                        dias += Calendar.TUESDAY
+                        dias += DayOfWeek.TUESDAY
                     if (binding.cbQua.isChecked)
-                        dias += Calendar.WEDNESDAY
+                        dias += DayOfWeek.WEDNESDAY
                     if (binding.cbQui.isChecked)
-                        dias += Calendar.THURSDAY
+                        dias += DayOfWeek.THURSDAY
                     if (binding.cbSex.isChecked)
-                        dias += Calendar.FRIDAY
+                        dias += DayOfWeek.FRIDAY
                     if (binding.cbSab.isChecked)
-                        dias += Calendar.SATURDAY
+                        dias += DayOfWeek.SATURDAY
 
                     viewModel.ativar(
                         email = binding.edtEmail.text.toString(),
@@ -45,5 +45,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.btnCancelar.setOnClickListener { viewModel.cancelar() }
     }
 }

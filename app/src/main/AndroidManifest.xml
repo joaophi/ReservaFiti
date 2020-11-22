@@ -19,8 +19,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ReservaReceiver" />
-
     </application>
 
 </manifest>

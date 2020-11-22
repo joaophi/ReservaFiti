@@ -86,11 +86,11 @@
         android:layout_margin="4dp"
         android:text="Ativar" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLogs"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        android:layout_weight="1" />
+        android:text="Cancelar" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
