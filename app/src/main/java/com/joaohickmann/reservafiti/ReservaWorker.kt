@@ -39,10 +39,10 @@ class ReservaWorker(
         }
 
         val builder = NotificationCompat.Builder(applicationContext, "reserva")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .build()
         val id = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
         NotificationManagerCompat.from(applicationContext).notify(id, builder)
