@@ -15,6 +15,16 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+sealed class LoginStatus
+object LoggedOut : LoginStatus()
+object LogginIn : LoginStatus()
+data class LoggedIn(
+    val email: String,
+    val senha: String,
+    val token: String,
+    val idFilial: Int
+) : LoginStatus()
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val workManager = WorkManager.getInstance(application)
 
@@ -35,13 +45,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loginStatus.emit(LogginIn)
             try {
-                val buscarUsuario = fitiApi.buscarUsuario(email)
+                val buscarUsuario = fitiApi
+                    .buscarUsuario(email)
                     .unwrap()
 
-                val autenticarUsuario =
-                    fitiApi.autenticarUsuario(buscarUsuario.idAspeNetUser, senha)
-                        .unwrap()
-                        .first()
+                val autenticarUsuario = fitiApi
+                    .autenticarUsuario(buscarUsuario.idAspeNetUser, senha)
+                    .unwrap()
+                    .first()
 
                 val obterDadosLogin = fitiApi
                     .obterDadosLogin(
@@ -52,12 +63,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     .unwrap()
 
                 _loginStatus.emit(
-                    LoggedIn(
-                        email,
-                        senha,
-                        obterDadosLogin.token,
-                        obterDadosLogin.idFilial
-                    )
+                    LoggedIn(email, senha, obterDadosLogin.token, obterDadosLogin.idFilial)
                 )
             } catch (ex: Exception) {
                 _loginStatus.emit(LoggedOut)
