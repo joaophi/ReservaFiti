@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 fun <T : Any?> Response<T>.unwrap(): T = if (isSuccessful)
@@ -51,6 +52,8 @@ interface FitiApi {
     data class ObterAgendaDia(
         val idConfiguracao: Int,
         val horaInicio: String,
+        val horaFim: String,
+        val horaInicioReserva: String,
         val status: Int,
     )
 
@@ -63,6 +66,20 @@ interface FitiApi {
         @Query("filtroFim") filtroFim: String?,
         @Query("idsAtividades") idsAtividades: Int?,
     ): Response<List<ObterAgendaDia>>
+
+    @JsonClass(generateAdapter = true)
+    data class AtividadeAcademia(
+        val idAtividade: Int,
+        val nomeAtividade: String
+    ) {
+        override fun toString(): String = "$idAtividade - $nomeAtividade"
+    }
+
+    @GET("/api/v1/agenda/atividades-academia/{idFilial}")
+    suspend fun atividadesAcademia(
+        @Header("Authorization") authorization: String,
+        @Path("idFilial") idFilial: Int
+    ): Response<List<AtividadeAcademia>>
 
     @GET("/api/v1/agenda/participar-atividade?numeroDaVaga=null")
     suspend fun participarAtividade(
