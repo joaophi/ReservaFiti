@@ -140,14 +140,25 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItens"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/crdItens"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
         android:layout_weight="1"
         android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:visibility="visible" />
+        app:cardElevation="4dp"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvItens"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:visibility="visible" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

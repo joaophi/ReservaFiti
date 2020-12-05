@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 binding.crdLogin.isVisible = !loggedIn
                 binding.btnEntrar.isEnabled = status !is LogginIn
                 binding.crdAtividade.isVisible = loggedIn
-                binding.rvItens.isVisible = loggedIn
+                binding.crdItens.isVisible = loggedIn
             }
             .launchWhenStartedIn(lifecycleScope)
 
