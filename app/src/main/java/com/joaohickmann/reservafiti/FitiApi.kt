@@ -7,10 +7,10 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-fun <T : Any?> Response<T>.unwrap(): T = if (isSuccessful)
-    body() ?: throw Exception("Error: null body")
-else
-    throw Exception(errorBody()?.string() ?: "Error: null errorBody")
+fun <T : Any?> Response<T>.unwrap(): T = when {
+    isSuccessful -> body() ?: throw Exception("Error: null body")
+    else -> throw Exception(errorBody()?.string() ?: "Error: null errorBody")
+}
 
 interface FitiApi {
     @JsonClass(generateAdapter = true)

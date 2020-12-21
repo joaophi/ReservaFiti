@@ -76,16 +76,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val atividades = _loginStatus
         .filterIsInstance<LoggedIn>()
         .transformLatest { loggedIn ->
+            emit(emptyList())
             try {
                 val atividades = fitiApi
                     .atividadesAcademia("Bearer ${loggedIn.token}", loggedIn.idFilial)
                     .unwrap()
                 emit(atividades)
                 if (atividade.value !in atividades)
-                    atividade.value = null
+                    atividade.emit(null)
             } catch (ex: Exception) {
-                emit(emptyList())
-                atividade.value = null
+                atividade.emit(null)
                 _erros.emit(ex)
             }
         }
@@ -96,8 +96,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val horario = MutableStateFlow<Pair<LocalTime, LocalTime>?>(null)
     val horarios = _loginStatus
         .filterIsInstance<LoggedIn>()
-        .flatMapLatest { loggedIn ->
-            combineTransform(atividade.filterNotNull(), dia) { atividade, dia ->
+        .transformLatest { loggedIn ->
+            emit(emptyList())
+            emitAll(combineTransform(atividade.filterNotNull(), dia) { atividade, dia ->
+                emit(emptyList())
                 try {
                     val data = generateSequence(LocalDate.now()) { it.plusDays(1) }
                         .first { it.dayOfWeek == dia }
@@ -116,13 +118,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         .map { LocalTime.parse(it.horaInicio) to LocalTime.parse(it.horaFim) }
                     emit(horarios)
                     if (horario.value !in horarios)
-                        horario.value = null
+                        horario.emit(null)
                 } catch (ex: Exception) {
-                    emit(emptyList())
-                    horario.value = null
+                    horario.emit(null)
                     _erros.emit(ex)
                 }
-            }
+            })
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -202,16 +203,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         .map {
-            it.sortedWith { o1, o2 ->
-                var cmp = o1.dia.compareTo(o2.dia)
+            it.sortedWith { a, b ->
+                var cmp = a.dia.compareTo(b.dia)
                 if (cmp != 0)
                     return@sortedWith cmp
 
-                cmp = o1.hora.compareTo(o2.hora)
+                cmp = a.hora.compareTo(b.hora)
                 if (cmp != 0)
                     return@sortedWith cmp
 
-                o1.atividadeAcademia.idAtividade.compareTo(o2.atividadeAcademia.idAtividade)
+                cmp = a.atividadeAcademia.nomeAtividade.compareTo(b.atividadeAcademia.nomeAtividade)
+                if (cmp != 0)
+                    return@sortedWith cmp
+
+                a.atividadeAcademia.idAtividade.compareTo(b.atividadeAcademia.idAtividade)
             }
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())

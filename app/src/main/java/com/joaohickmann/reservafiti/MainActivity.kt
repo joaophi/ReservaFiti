@@ -20,9 +20,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 
-fun <T> Flow<T>.launchWhenStartedIn(scope: LifecycleCoroutineScope) = scope.launchWhenStarted {
-    collect()
-}
+fun <T> Flow<T>.launchWhenStartedIn(scope: LifecycleCoroutineScope) = scope
+    .launchWhenStarted { collect() }
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -63,12 +62,12 @@ class MainActivity : AppCompatActivity() {
             this,
             android.R.layout.simple_dropdown_item_1line
         )
-        atividadeAdapter.setNotifyOnChange(false)
         binding.edtAtividade.setAdapter(atividadeAdapter)
 
         viewModel.atividades
             .onEach { atividades ->
                 binding.tilAtividade.isEnabled = atividades.isNotEmpty()
+                atividadeAdapter.setNotifyOnChange(false)
                 atividadeAdapter.clear()
                 atividadeAdapter.addAll(atividades)
                 atividadeAdapter.notifyDataSetChanged()
@@ -94,10 +93,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.dia
             .onEach { dia ->
-                binding.edtDia.setText(
-                    dia.getDisplayName(TextStyle.FULL, Locale.getDefault()).orEmpty(),
-                    false
-                )
+                val text = dia.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                binding.edtDia.setText(text, false)
             }
             .launchWhenStartedIn(lifecycleScope)
         binding.edtDia.setOnItemClickListener { _, _, position, _ ->
@@ -110,18 +107,16 @@ class MainActivity : AppCompatActivity() {
             this,
             android.R.layout.simple_dropdown_item_1line
         )
-        horarioAdapter.setNotifyOnChange(false)
         binding.edtHorario.setAdapter(horarioAdapter)
 
-        val horarioFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        val timeForm = DateTimeFormatter.ofPattern("HH:mm")
         viewModel.horarios
             .onEach { horarios ->
                 binding.tilHorario.isEnabled = horarios.isNotEmpty()
+                horarioAdapter.setNotifyOnChange(false)
                 horarioAdapter.clear()
                 horarioAdapter.addAll(horarios
-                    .map { (inicio, fim) ->
-                        "${horarioFormatter.format(inicio)} - ${horarioFormatter.format(fim)}"
-                    })
+                    .map { (inicio, fim) -> "${timeForm.format(inicio)} - ${timeForm.format(fim)}" })
                 horarioAdapter.notifyDataSetChanged()
                 binding.edtHorario.setOnItemClickListener { _, _, position, _ ->
                     viewModel.horario.value = horarios[position]
@@ -130,13 +125,10 @@ class MainActivity : AppCompatActivity() {
             .launchWhenStartedIn(lifecycleScope)
         viewModel.horario
             .onEach { horario ->
-                if (horario == null) {
-                    binding.edtHorario.setText("", false)
-                    return@onEach
+                val text = when (horario) {
+                    null -> ""
+                    else -> "${timeForm.format(horario.first)} - ${timeForm.format(horario.second)}"
                 }
-
-                val (inicio, fim) = horario
-                val text = "${horarioFormatter.format(inicio)} - ${horarioFormatter.format(fim)}"
                 binding.edtHorario.setText(text, false)
             }
             .launchWhenStartedIn(lifecycleScope)
@@ -146,7 +138,6 @@ class MainActivity : AppCompatActivity() {
         combine(viewModel.atividade, viewModel.horario) { a -> a.all { it != null } }
             .onEach(binding.btnAdicionar::setEnabled)
             .launchWhenStartedIn(lifecycleScope)
-
         binding.btnAdicionar.setOnClickListener { viewModel.adicionar() }
 
         // WORKS

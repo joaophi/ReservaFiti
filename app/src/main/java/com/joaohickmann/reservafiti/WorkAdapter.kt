@@ -41,8 +41,7 @@ class WorkAdapter(
 
         fun bind(item: Work) {
             workInfo = item
-            binding.tvAtividade.text =
-                "${item.atividadeAcademia.idAtividade} - ${item.atividadeAcademia.nomeAtividade}"
+            binding.tvAtividade.text = "${item.atividadeAcademia}"
             binding.tvDia.text = item.dia.getDisplayName(TextStyle.FULL, Locale.getDefault())
             binding.tvHora.text = horarioFormatter.format(item.hora)
         }
